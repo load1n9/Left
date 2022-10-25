@@ -1,5 +1,6 @@
 import { left } from "../left.ts";
 import { SYN_DB } from './synonyms.ts';
+
 function uniq(a1: any) { const a2 = []; for (const id in a1) { if (a2.indexOf(a1[id]) === -1) { a2[a2.length] = a1[id] } } return a2 }
 
 export class Dictionary {

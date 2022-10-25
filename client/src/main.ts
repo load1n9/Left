@@ -6,86 +6,86 @@ import "./main.css";
 import "./theme.css";
 
 const EOL = '\n'
-
+window.left = left;
 
 left.install(document.body)
 left.start()
 
-document.onkeydown = function keyDown(e) {
-  left.last_char = e.key
+document.onkeydown = (e) => {
+  window.left.last_char = e.key
   if (e.keyCode === 9) {
     if (e.shiftKey) {
-      left.stats.nextSynonym()
+      window.left.stats.nextSynonym()
     } else {
-      left.select_autocomplete()
+      window.left.select_autocomplete()
     }
     e.preventDefault()
     return
   }
   if (e.metaKey || e.ctrlKey) {
     if (e.keyCode === 221) {
-      left.navi.next_marker()
+      window.left.navi.next_marker()
       e.preventDefault()
       return
     }
     if (e.keyCode === 291) {
-      left.navi.prev_marker()
+      window.left.navi.prev_marker()
       e.preventDefault()
       return
     }
   }
   if (e.key === ' ' || e.key === 'Enter') {
-    left.selection.index = 0
+    window.left.selection.index = 0
   }
 
   if (e.key.substring(0, 5) === 'Arrow') {
-    setTimeout(() => left.update(), 0)
+    setTimeout(() => window.left.update(), 0)
     return
   }
   if (e.key === 'Enter') {
-    setTimeout(() => { left.dictionary.update(); left.update() }, 16)
+    setTimeout(() => { window.left.dictionary.update(); window.left.update() }, 16)
   }
 }
 
 document.onkeyup = (e) => {
-  if (e.key === 'Enter' && left.autoindent) {
-    let cur_pos = left.textarea_el.selectionStart
+  if (e.key === 'Enter' && window.left.autoindent) {
+    let cur_pos = window.left.textarea_el.selectionStart
 
     let indent = ''
     let line = ''
     for (let pos = cur_pos - 2;
       pos >= 0 &&
-      left.textarea_el.value.charAt(pos) != '\n';
+      window.left.textarea_el.value.charAt(pos) != '\n';
       pos--
     ) {
-      line += left.textarea_el.value.charAt(pos)
+      line += window.left.textarea_el.value.charAt(pos)
     }
 
     let matches
     if ((matches = /^.*?([\s\t]+)$/gm.exec(line)) !== null) { // found indent
       indent = matches[1].split('').reverse().join('') // reverse
-      left.textarea_el.selectionStart = cur_pos
-      left.inject(indent)
+      window.left.textarea_el.selectionStart = cur_pos
+      window.left.inject(indent)
     }
   }
 
   if (e.keyCode === 16) { // Shift
-    left.stats.applySynonym()
-    left.update()
+    window.left.stats.applySynonym()
+    window.left.update()
     return
   }
   if (e.keyCode !== 9) {
-    left.update()
+    window.left.update()
   }
 }
 
-window.addEventListener('dragover', function (e) {
+window.addEventListener('dragover', (e) => {
   e.stopPropagation()
   e.preventDefault()
   e.dataTransfer.dropEffect = 'copy'
 })
 
-window.addEventListener('drop', function (e) {
+window.addEventListener('drop', (e) => {
   e.stopPropagation()
   e.preventDefault()
 
@@ -97,18 +97,18 @@ window.addEventListener('drop', function (e) {
     if (file.type && !file.type.match(/text.*/)) { console.log(`Skipped ${file.type} : ${file.path}`); continue }
     if (file.path && file.path.substr(-3, 3) === 'thm') { continue }
 
-    left.project.add(file.path)
+    window.left.project.add(file.path)
   }
 
-  left.reload()
-  left.navi.next_page()
+  window.left.reload()
+  window.left.navi.next_page()
 })
 
-document.onclick = function onClick(e) {
-  left.selection.index = 0
-  left.operator.stop()
-  left.reader.stop()
-  left.update()
+document.onclick = (e) => {
+  window.left.selection.index = 0
+  window.left.operator.stop()
+  window.left.reader.stop()
+  window.left.update()
 }
 
 

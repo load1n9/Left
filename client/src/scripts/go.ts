@@ -2,6 +2,36 @@ import { left } from "../left.ts";
 
 const EOL = '\n'
 
+
+function clamp(v: number, min: number, max: number) { return v < min ? min : v > max ? max : v }
+
+
+const easeInOutQuad = (t: number, b: number, c: number, d: number) => {
+  t /= d / 2
+  if (t < 1) return c / 2 * t * t + b
+  t--
+  return -c / 2 * (t * (t - 2) - 1) + b
+}
+
+function animateScrollTo(element: any, to: any, duration: any) {
+  const start = element.scrollTop
+  const change = to - start
+  let currentTime = 0
+  const increment = 20 // Equal to line-height
+
+  const animate = function () {
+    currentTime += increment
+    const val = easeInOutQuad(currentTime, start, change, duration)
+    element.scrollTop = val
+    if (!left.reader.active) left.stats.on_scroll()
+    if (currentTime < duration) {
+      requestAnimationFrame(animate, increment)
+    }
+  }
+  requestAnimationFrame(animate)
+}
+
+
 export class Go {
   to_page(id: any = 0, line: any = 0) {
     left.project.index = clamp(parseInt(id), 0, left.project.pages.length - 1)
@@ -67,31 +97,3 @@ export class Go {
 // d = duration
 
 
-
-function clamp(v: number, min: number, max: number) { return v < min ? min : v > max ? max : v }
-
-
-const easeInOutQuad = (t: number, b: number, c: number, d: number) => {
-  t /= d / 2
-  if (t < 1) return c / 2 * t * t + b
-  t--
-  return -c / 2 * (t * (t - 2) - 1) + b
-}
-
-function animateScrollTo(element: any, to: any, duration: any) {
-  const start = element.scrollTop
-  const change = to - start
-  let currentTime = 0
-  const increment = 20 // Equal to line-height
-
-  const animate = function () {
-    currentTime += increment
-    const val = easeInOutQuad(currentTime, start, change, duration)
-    element.scrollTop = val
-    if (!left.reader.active) left.stats.on_scroll()
-    if (currentTime < duration) {
-      requestAnimationFrame(animate, increment)
-    }
-  }
-  requestAnimationFrame(animate)
-}
